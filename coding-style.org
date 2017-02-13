@@ -1,8 +1,0 @@
-* Comments
-  #+BEGIN_SRC python
-  # comments
-  #+END_SRC
-  and not
-  #+BEGIN_SRC python
-  # Comments
-  #+END_SRC
