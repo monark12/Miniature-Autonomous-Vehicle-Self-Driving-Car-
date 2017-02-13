@@ -3,11 +3,12 @@ import socket
 import struct
 import cv2
 from PIL import Image
+import time
 
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
 server_socket = socket.socket()
-server_socket.bind(('192.168.43.244', 8000))
+server_socket.bind(('192.168.1.2', 8000))
 server_socket.listen(0)
 i=0
 # Accept a single connection and make a file-like object out of it
@@ -30,13 +31,13 @@ try:
         image_stream.seek(0)
         image = Image.open(image_stream)
         
-        import numpy as np
-        
         image.save("training_images/frame"+str(i)+".jpg", "JPEG", quality=80, optimize=True, progressive=True)
         i+=1
+        print ('----------------', time.time(), '----------------')
         print('Image is %dx%d' % image.size)
         image.verify()
         print('Image is verified')
+        print ('--------------------------------')
 finally:
     connection.close()
     server_socket.close()
