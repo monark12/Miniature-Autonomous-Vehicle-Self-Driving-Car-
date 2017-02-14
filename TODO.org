@@ -3,3 +3,5 @@
   + Resouces: 
   + https://github.com/kendricktan/suiron
   + https://github.com/hamuchiwa/AutoRCCar/blob/master/computer/collect_training_data.py
+
+* TODO add references to copied code
