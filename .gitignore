@@ -1,6 +1,9 @@
 server/test.py
 server/training_images
-*/#*
-*/.#*
-#*
-.#*
+plan.org
+*/#*#
+*/.#*#
+#*#
+.#*#
+.DS_Store
+*/.DS_Store
