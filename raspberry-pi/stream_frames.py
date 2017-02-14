@@ -7,7 +7,7 @@ import picamera
 # Connect a client socket to my_server:8000 (change my_server to the
 # hostname of your server)
 client_socket = socket.socket()
-client_socket.connect(('192.168.43.244', 8000))
+client_socket.connect(('192.168.1.2', 8000))
 
 # Make a file-like object out of the connection
 connection = client_socket.makefile('wb')
@@ -15,9 +15,10 @@ try:
     with picamera.PiCamera() as camera:
         camera.resolution = (640, 480)
         # Start a preview and let the camera warm up for 2 seconds
-        camera.framerate = 10
+        camera.framerate = 48
+        camera.color_effects = (128,128)
         camera.start_preview()
-        time.sleep(2)
+        #time.sleep(2)
 
         # Note the start time and construct a stream to hold image data
         # temporarily (we could write it directly to connection but in this
