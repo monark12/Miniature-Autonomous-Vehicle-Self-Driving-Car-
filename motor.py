@@ -8,7 +8,7 @@ from pygame.locals import *
 import time
 
 pygame.init()
-screen = pygame.display.init((100,100))
+screen = pygame.display.set_mode((100,100))
 
 class Motor(object):
   def __init__(self, in1_pin=22, in2_pin=27, delayed=0, mode="pwm", frequency=500, active=1):
