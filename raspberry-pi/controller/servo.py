@@ -4,11 +4,19 @@ import time
 
 import pigpio
 
-servos = [4,7,8,9,10]
+servo = 4
+
+pi = pigpio.pi() # Connect to local Pi.
+
+pi.set_servo_pulsewidth(servo, 2500);
+time.sleep(10)
+pi.set_servo_pulsewidth(servo, 0);
+
+while True:
+ pass
 
 moves = [[1500, 5],[1400,3],[1300,2],[1200,5],[1100,10]]
 
-pi = pigpio.pi() # Connect to local Pi.
 
 for m in moves:
 
