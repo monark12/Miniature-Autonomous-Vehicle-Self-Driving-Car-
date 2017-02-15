@@ -9,19 +9,29 @@ import time
 
 
 class Servo(object):
-  def __init__(self, channel=17, frequency=100, duty_cycle=5):
+  def __init__(self, channel=4, frequency=100, duty_cycle=5):
+    self.channel = channel
+    self.frequency = frequency
+    self.duty_cycle = duty_cycle
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(self.channel, GPIO.OUT)
     self.pwm = GPIO.PWM(self.channel, self.frequency)
     self.pwm.start(self.duty_cycle)
 
-  def turn(angle):
+  def turn(self, angle):
     self.pwm.ChangeDutyCycle(float(angle) / 10.0 + 2.5)
-    time.sleep(0.02) 
+    time.sleep(1) 
 
 
-# def main():
-#   pass
+def main():
+  s = Servo()
+  s.turn(50)
+#  s.turn(0) 
+#  s.turn(12) 
+#  s.turn(25) 
+#  s.turn(37) 
+#  s.turn(50) 
+  pass
 
-# if __name__ == '__main__':
-  # main()
+if __name__ == '__main__':
+  main()
