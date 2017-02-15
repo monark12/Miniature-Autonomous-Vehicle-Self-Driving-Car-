@@ -18,13 +18,19 @@ class Motor(object):
     self.mode = mode
     self.frequency = frequency
     self.active = active
+    self.duty_cycle =50#############
     io.setmode(io.BCM)
     io.setup(self.in1_pin, io.OUT)
     io.setup(self.in2_pin, io.OUT)
-    self.set("delayed", str(self.delayed))
-    self.set("mode", self.mode)
-    self.set("frequency", str(self.frequency))
-    self.set("active", str(self.active))
+    self.pwm = io.PWM(self.in1_pin, self.frequency)
+    
+#    self.set("delayed", str(self.delayed))
+##    self.set("mode", self.mode)
+##    self.set("frequency", str(self.frequency))
+##    self.set("active", str(self.active))
+##    self.set('duty', str(50))
+
+     
 
   def set(self, property, value):
     try:
@@ -34,9 +40,10 @@ class Motor(object):
     except:
       print("Error writing to: " + property + " value: " + value)
 
-  def forward(self):
+  def forward(self, speed):
     
-    io.output(self.in1_pin, True) 
+    #self.pwm.ChangeDutyCycle(float(speed)*11)
+    self.pwm.start(self.duty_cycle)
     io.output(self.in2_pin, False)
 
 
@@ -60,12 +67,11 @@ class Motor(object):
     speed (int): 0,...,9
     """
     if direction == "forward":
-      self.forward()
+      self.forward(speed)
     elif direction == "stop":
       self.stop()
     else:
       self.reverse()
-    self.set("duty", str(int(speed)*11))
     
 
 # def main():
@@ -75,12 +81,14 @@ class Motor(object):
   # main()
 
 print(pygame.event.get())
+
+
 m = Motor()
 while(True):
  for event in pygame.event.get():
   if event.type == KEYDOWN:
    if event.key == K_UP:
-    m.forward()
+    m.forward(2)
    elif event.key == K_DOWN:
     m.reverse()
    else:
@@ -88,4 +96,5 @@ while(True):
 
   elif event.type == KEYUP:
     m.stop()
+    m.pwm.stop()
 ##m.forward()
