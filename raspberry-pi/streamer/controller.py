@@ -69,8 +69,7 @@ class Controller(object):
         else:
           self.steering_angle.append(self.steering_angle[:-1])
           self.steering_timestamp.append(time.time())
-			
-#### remove this
+
   def save_and_exit(self):
     print("saving...")
     self.servo.pi.stop()
