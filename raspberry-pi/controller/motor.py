@@ -8,7 +8,7 @@ import pygame
 from pygame.locals import *
 import time
 
-pygame.init()
+pygame.init()########
 screen = pygame.display.set_mode((100,100))
 
 class Motor(object):
@@ -26,18 +26,12 @@ class Motor(object):
     self.pwm = io.PWM(self.in1_pin, self.frequency)
     
   def forward(self, speed):
-    #self.pwm.ChangeDutyCycle(float(speed)*11)
-    #self.pwm.start(self.duty_cycle)
     self.pwm.start(speed)
     io.output(self.in2_pin, False)
 
   def stop(self):
     self.pwm.stop()
     io.output(self.in1_pin, False)
-    io.output(self.in2_pin, False)
-
-  def throttle(self, speed):
-    self.pwm.ChangeDutyCycle(float(speed)*11)
     io.output(self.in2_pin, False)
 
 print(pygame.event.get())

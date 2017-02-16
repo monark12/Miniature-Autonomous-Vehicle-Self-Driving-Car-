@@ -15,7 +15,7 @@ class SteeringController(object):
   def steer(self):
 		while True:
 			for event in pygame.event.get():
-				
+				pass
 			
     
 
