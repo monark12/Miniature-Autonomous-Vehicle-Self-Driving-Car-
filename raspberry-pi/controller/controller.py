@@ -1,7 +1,10 @@
 import sys
+import time
 from time import gmtime, strftime
 from util import motor
 from util import servo
+import pygame
+from pygame.locals import *
 
 pygame.init()
 screen = pygame.display.set_mode((100,100))
@@ -9,7 +12,7 @@ screen = pygame.display.set_mode((100,100))
 class Controller(object):
   def __init__(self):
     self.motor = motor.Motor()
-    self.servo = servo.Servo()
+    self.servo = servo.Servo(4)
     self.steering_angle = []
     self.steering_timestamp = []
 
@@ -17,12 +20,11 @@ class Controller(object):
     while(True):
       for event in pygame.event.get():
 
-				# key is pressed
+	# key is pressed
         if event.type == KEYDOWN:
 
           if event.key == K_UP:
             print("forward")
-            self.servo.center()
             self.motor.forward(70)
             self.steering_angle.append([1,0,0,0])
             self.steering_timestamp.append(time.time())
@@ -36,14 +38,12 @@ class Controller(object):
           elif event.key == K_LEFT:
             print("left")
             self.servo.left()
-            self.motor.forward(70)
             self.steering_angle.append([0,0,1,0])
             self.steering_timestamp.append(time.time())
 
           elif event.key == K_RIGHT:
             print("right")
             self.servo.right()
-            self.motor.forward(70)
             self.steering_angle.append([0,0,0,1])
             self.steering_timestamp.append(time.time())
 
@@ -67,14 +67,21 @@ class Controller(object):
 
         # key is pressed and down
         else:
-          self.steering_angle.append(steering_angle[-1])
+          self.steering_angle.append(self.steering_angle[:-1])
           self.steering_timestamp.append(time.time())
 
 	def save_and_exit(self):
 		print("saving...")
+		self.servo.pi.stop()
 		self.steering_angle = np.array(self.steering_angle)
 		self.steering_timestamp = np.array(self.steering_timestamp)
 		np.savez("steering-%s"%(strftime("%Y-%m-%d %H:%M:%S", gmtime()))+".npz", steering_angle=self.steering_angle, steering_timestamp=self.steering_timestamp)
 		print("quitting...")
 		sys.exit(0)
+
+
+
+
+c=Controller()
+c.steer()
 
