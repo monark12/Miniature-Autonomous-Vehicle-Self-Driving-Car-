@@ -79,10 +79,10 @@ class Controller(object):
     print("quitting...")
     sys.exit(0)
 
-  def main():
-    c=Controller()
-    c.steer()
+def main():
+  c=Controller()
+  c.steer()
 
 if __name__ == '__main__':
-  main()
+ main()
 
