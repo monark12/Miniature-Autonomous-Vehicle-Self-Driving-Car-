@@ -70,18 +70,19 @@ class Controller(object):
           self.steering_angle.append(self.steering_angle[:-1])
           self.steering_timestamp.append(time.time())
 
-	def save_and_exit(self):
-		print("saving...")
-		self.servo.pi.stop()
-		self.steering_angle = np.array(self.steering_angle)
-		self.steering_timestamp = np.array(self.steering_timestamp)
-		np.savez("steering-%s"%(strftime("%Y-%m-%d %H:%M:%S", gmtime()))+".npz", steering_angle=self.steering_angle, steering_timestamp=self.steering_timestamp)
-		print("quitting...")
-		sys.exit(0)
+  def save_and_exit(self):
+    print("saving...")
+    self.servo.pi.stop()
+    self.steering_angle = np.array(self.steering_angle)
+    self.steering_timestamp = np.array(self.steering_timestamp)
+    np.savez("steering-%s"%(strftime("%Y-%m-%d %H:%M:%S", gmtime()))+".npz", steering_angle=self.steering_angle, steering_timestamp=self.steering_timestamp)
+    print("quitting...")
+    sys.exit(0)
 
+  def main():
+    c=Controller()
+    c.steer()
 
-
-
-c=Controller()
-c.steer()
+if __name__ == '__main__':
+  main()
 
