@@ -1,10 +1,11 @@
 import sys
-import time
 from time import gmtime, strftime
 from util import motor
 from util import servo
 import pygame
 from pygame.locals import *
+import threading
+import time
 
 pygame.init()
 screen = pygame.display.set_mode((100,100))
@@ -14,9 +15,9 @@ class Controller(object):
     self.motor = motor.Motor()
     self.servo = servo.Servo(4)
     self.steering_angle = []
-    self.steering_timestamp = []
 
   def steer(self):
+    print("steering started...")
     while(True):
       for event in pygame.event.get():
 
@@ -27,25 +28,21 @@ class Controller(object):
             print("forward")
             self.motor.forward(70)
             self.steering_angle.append([1,0,0,0])
-            self.steering_timestamp.append(time.time())
 
           elif event.key == K_DOWN:
             print("stop")
             self.motor.stop()
             self.steering_angle.append([0,1,0,0])
-            self.steering_timestamp.append(time.time())
 
           elif event.key == K_LEFT:
             print("left")
             self.servo.left()
             self.steering_angle.append([0,0,1,0])
-            self.steering_timestamp.append(time.time())
 
           elif event.key == K_RIGHT:
             print("right")
             self.servo.right()
             self.steering_angle.append([0,0,0,1])
-            self.steering_timestamp.append(time.time())
 
           elif event.key == K_q:
             self.save_and_exit()
@@ -68,7 +65,6 @@ class Controller(object):
         # key is pressed and down
         else:
           self.steering_angle.append(self.steering_angle[:-1])
-          self.steering_timestamp.append(time.time())
 
   def save_and_exit(self):
     print("saving...")

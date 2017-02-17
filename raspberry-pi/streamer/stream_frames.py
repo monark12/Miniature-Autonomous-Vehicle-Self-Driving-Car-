@@ -4,41 +4,46 @@ import socket
 import struct
 import time
 import picamera
-from threading import thread
-from controller import controller
+#from threading import Thread
+from multiprocessing import Process
 
 # arrays to be saved
 frame_id = []
 angles = []
 ts = []
-c = controller()
 
 
 # connect a client socket to my_server:8000 (change my_server to the
 # hostname of your server)
 client_socket = socket.socket()
-client_socket.connect(('192.168.1.2', 8000))
+print('bef con')
+client_socket.connect(('192.168.0.6', 8000))
+print('aft con')
 
-t = thread(target=c.steer)
-t.start()
+import controller 
+c = controller.Controller()
+#t = Thread(target=c.steer)
+#t.start()
 
+P = Process(target=c.steer)
+P.start()
 # make a file-like object out of the connection
 connection = client_socket.makefile('wb')
 try:
-  with picamera.picamera() as camera:
+  with picamera.PiCamera() as camera:
     camera.resolution = (640, 480)
     # start a preview and let the camera warm up for 2 seconds
     camera.framerate = 48
     camera.color_effects = (128,128)
     camera.start_preview()
-    #time.sleep(2)
+    time.sleep(2)
 
     # note the start time and construct a stream to hold image data
     # temporarily (we could write it directly to connection but in this
     # case we want to find out the size of each capture first to keep
     # our protocol simple)
     start = time.time()
-    stream = io.bytesio()
+    stream = io.BytesIO()
 
     # start steering in another thread
     
@@ -69,6 +74,6 @@ finally:
   frame_id = np.array(frame_id)
   angles = np.array(angles)
   ts = np.array(ts)
-  np.savez("steering-%s"%(strftime("%Y-%m-%d %H:%M:%S", gmtime()))+".npz", frame_id=frame_id, angles=angles, ts=ts)
+  np.savez("steering-1.npz", frame_id=frame_id, angles=angles, ts=ts)
   connection.close()
   client_socket.close()

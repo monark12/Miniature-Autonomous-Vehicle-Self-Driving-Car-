@@ -8,13 +8,13 @@ class Servo(object):
 
   def center(self):
     self.pi.set_servo_pulsewidth(self.pin, 2150);
-    time.sleep(.02) #### to be changed
+    time.sleep(.1) #### to be changed
 
   def left(self):
     self.pi.set_servo_pulsewidth(self.pin, 2050);
-    time.sleep(.02) #### to be changed
+    time.sleep(.1) #### to be changed
 
   def right(self):
     self.pi.set_servo_pulsewidth(self.pin, 2250);
-    time.sleep(.02) #### to be changed
+    time.sleep(.1) #### to be changed
 

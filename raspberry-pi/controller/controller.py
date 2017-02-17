@@ -1,10 +1,10 @@
 import sys
-import time
 from time import gmtime, strftime
 from util import motor
 from util import servo
 import pygame
 from pygame.locals import *
+import numpy as np
 
 pygame.init()
 screen = pygame.display.set_mode((100,100))
@@ -27,25 +27,21 @@ class Controller(object):
             print("forward")
             self.motor.forward(70)
             self.steering_angle.append([1,0,0,0])
-            self.steering_timestamp.append(time.time())
 
           elif event.key == K_DOWN:
             print("stop")
             self.motor.stop()
             self.steering_angle.append([0,1,0,0])
-            self.steering_timestamp.append(time.time())
 
           elif event.key == K_LEFT:
             print("left")
             self.servo.left()
             self.steering_angle.append([0,0,1,0])
-            self.steering_timestamp.append(time.time())
 
           elif event.key == K_RIGHT:
             print("right")
             self.servo.right()
             self.steering_angle.append([0,0,0,1])
-            self.steering_timestamp.append(time.time())
 
           elif event.key == K_q:
             self.save_and_exit()
