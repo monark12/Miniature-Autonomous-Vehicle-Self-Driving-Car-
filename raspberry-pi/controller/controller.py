@@ -1,10 +1,10 @@
 import sys
-import time
 from time import gmtime, strftime
 from util import motor
 from util import servo
 import pygame
 from pygame.locals import *
+import numpy as np
 
 pygame.init()
 screen = pygame.display.set_mode((100,100))
