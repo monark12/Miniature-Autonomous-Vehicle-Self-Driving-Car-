@@ -55,6 +55,8 @@ class Controller(object):
       
   def save_and_exit(self):
     print("saving")
+    self.steering_angle = np.array(self.steering_angle)
+    self.steering_timestamp = np.array(self.steering_timestamp)
     np.savez("steer-1.npz", steering_angle=self.steering_angle, steering_timestamp=self.steering_timestamp)
     print("exiting")
 

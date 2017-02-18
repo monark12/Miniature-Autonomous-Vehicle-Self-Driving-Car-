@@ -1,0 +1,5 @@
+imgs_path = 'training_images/'
+angle_steers = 'steer-1.npz'
+
+imgs = os.listdir('training_images')
+
