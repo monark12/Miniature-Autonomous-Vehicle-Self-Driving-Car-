@@ -8,7 +8,7 @@ from pygame.locals import *
 import numpy as np
 
 pygame.init()
-screen = pygame.display.set_mode((100,100))
+screen = pygame.display.set_mode((50,50))
 
 class Controller(object):
   def __init__(self):
@@ -16,6 +16,7 @@ class Controller(object):
     self.servo = servo.Servo(4)
     self.steering_angle = []
     self.steering_timestamp = []
+    self.dir = {'forward': [1,0,0], 'forward_left': [0,1,0], 'forward_right': [0,0,1]}
 
   def steer(self):
     while(True):
@@ -25,18 +26,24 @@ class Controller(object):
         if event.type == KEYDOWN:
 
           if event.key == K_UP:
+            self.steering_timestamp.append(time.time())
             print("forward")
             self.motor.forward(70)
-            self.steering_angle.append([1,0])
-            self.steering_timestamp.append(time.time())
+            self.steering_angle.append(self.dir['forward'])
 
           elif event.key == K_LEFT:
+            self.steering_timestamp.append(time.time())
             print("left")
             self.servo.left()
-            self.steering_angle.append([0,1])
+            self.steering_angle.append(self.dir['forward_left'])
+          
+          elif event.key == K_RIGHT:
             self.steering_timestamp.append(time.time())
+            print("right")
+            self.servo.right()
+            self.steering_angle.append(self.dir['forward_right'])
 
-          elif event.key == K_DOWN:
+          elif event.key == K_q:
             self.save_and_exit()
 
         # key is down
@@ -46,12 +53,19 @@ class Controller(object):
             self.motor.stop()
 
           elif event.key == K_LEFT:
+            self.steering_timestamp.append(time.time())
             self.servo.center()
+            self.steering_angle.append(self.dir['forward'])
+          
+          elif event.key == K_RIGHT:
+            self.steering_timestamp.append(time.time())
+            self.servo.center()
+            self.steering_angle.append(self.dir['forward'])
 
         # key is pressed and down
         else:
-          self.steering_angle.append(self.steering_angle[:-1])
           self.steering_timestamp.append(time.time())
+          self.steering_angle.append(self.steering_angle[:-1])
       
   def save_and_exit(self):
     print("saving")
@@ -65,5 +79,5 @@ def main():
   c.steer()
 
 if __name__ == '__main__':
- main()
+  main()
 

@@ -1,0 +1,1 @@
+raspivid -w 640 -h 480 -o /home/pi/video1.h264 -ex night -t 60000
