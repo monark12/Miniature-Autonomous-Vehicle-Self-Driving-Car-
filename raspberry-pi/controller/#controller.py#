@@ -1,11 +1,10 @@
 import sys
+import time
 from time import gmtime, strftime
 from util import motor
 from util import servo
 import pygame
 from pygame.locals import *
-import threading
-import time
 
 pygame.init()
 screen = pygame.display.set_mode((100,100))
@@ -15,9 +14,9 @@ class Controller(object):
     self.motor = motor.Motor()
     self.servo = servo.Servo(4)
     self.steering_angle = []
+    self.steering_timestamp = []
 
   def steer(self):
-    print("steering started...")
     while(True):
       for event in pygame.event.get():
 
@@ -65,11 +64,8 @@ class Controller(object):
         # key is pressed and down
         else:
           self.steering_angle.append(self.steering_angle[:-1])
-<<<<<<< HEAD:raspberry-pi/controller/#controller.py#
 
       
-=======
->>>>>>> a5e4c12691667ce692933375ff4e20aa36fc4ac6:raspberry-pi/streamer/controller.py
 
   def save_and_exit(self):
     print("saving...")

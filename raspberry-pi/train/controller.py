@@ -34,13 +34,13 @@ class Controller(object):
 
           elif event.key == K_LEFT:
             self.steering_timestamp.append(time.time())
-            print("left")
+            print("forward-left")
             self.servo.left()
             self.steering_angle.append(self.dir['forward_left'])
-          
+
           elif event.key == K_RIGHT:
             self.steering_timestamp.append(time.time())
-            print("right")
+            print("forward-right")
             self.servo.right()
             self.steering_angle.append(self.dir['forward_right'])
 
@@ -57,7 +57,7 @@ class Controller(object):
             self.steering_timestamp.append(time.time())
             self.servo.center()
             self.steering_angle.append(self.dir['forward'])
-          
+
           elif event.key == K_RIGHT:
             self.steering_timestamp.append(time.time())
             self.servo.center()
@@ -65,9 +65,10 @@ class Controller(object):
 
         # key is pressed and down
         else:
+          print("pressed")
           self.steering_timestamp.append(time.time())
-          self.steering_angle.append(self.steering_angle[:-1])
-      
+          self.steering_angle.append(self.steering_angle[-1])
+
   def save_and_exit(self):
     print("saving")
     self.steering_angle = np.array(self.steering_angle)

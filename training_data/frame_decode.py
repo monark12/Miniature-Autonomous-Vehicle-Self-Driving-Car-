@@ -53,6 +53,16 @@ try:
   # remove records where car was not moving
   clean_data = multidim_intersect(frame_to_angle_ts, angle_to_frame_ts)
 
+  # add steering angle
+  temp = []
+  steering_timestamp = list(steering_timestamp)
+  for i, steer_ts in enumerate(clean_data[:,1]):
+    temp.append(steering_angle[steering_timestamp.index(steer_ts)])
+  print(clean_data[:,1])
+  for i in range(len(clean_data[:,1])):
+    clean_data[i,1] = int(temp[i])
+
+
   # save cleaned data
   for index in clean_data[:,0]:
     pylab.imsave('imgs/frame%d.jpg'%int(index), vid.get_data(int(index)))
@@ -63,4 +73,4 @@ except RuntimeError:
   print('something went wrong')
 
 
-np.savetxt("foo.csv", clean_data, delimiter=',')	
+np.savetxt("foo.csv", clean_data, delimiter=',')
