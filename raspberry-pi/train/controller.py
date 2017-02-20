@@ -1,4 +1,5 @@
 import sys
+import os
 import time
 from time import gmtime, strftime
 from util import motor
@@ -16,7 +17,7 @@ class Controller(object):
     self.servo = servo.Servo(4)
     self.steering_angle = []
     self.steering_timestamp = []
-    self.dir = {'forward': [1,0,0], 'forward_left': [0,1,0], 'forward_right': [0,0,1]}
+    self.dir = {'forward': 0, 'forward_left': 1, 'forward_right': 2}
 
   def steer(self):
     while(True):
@@ -73,6 +74,8 @@ class Controller(object):
     self.steering_timestamp = np.array(self.steering_timestamp)
     np.savez("steer-1.npz", steering_angle=self.steering_angle, steering_timestamp=self.steering_timestamp)
     print("exiting")
+    os.system('scp steer-1.npz monark@192.168.0.6:/home/sdrcc/training_data/')
+    os.system('scp steer-1.npz gautamsharma@192.168.0.2:/home/projects/sdrcc/training_data/')
 
 def main():
   c = Controller()
