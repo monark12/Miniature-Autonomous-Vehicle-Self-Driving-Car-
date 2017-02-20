@@ -25,9 +25,11 @@ def find_closest_timestamp(search_list, search_element):
 
 def multidim_intersect(arr1, arr2):
   """Get intersection between multidimensional arrays"""
+  arr1 = np.array(arr1)
+  arr2 = np.array(arr2)
   arr1_view = arr1.view([('',arr1.dtype)]*arr1.shape[1])
   arr2_view = arr2.view([('',arr2.dtype)]*arr2.shape[1])
-  intersected = numpy.intersect1d(arr1_view, arr2_view)
+  intersected = np.intersect1d(arr1_view, arr2_view)
   return intersected.view(arr1.dtype).reshape(-1, arr1.shape[1])
 
 
@@ -42,7 +44,7 @@ try:
   for num, image in enumerate(vid.iter_data()):
     timestamp = float(num) / 8.
     temp_time_stamp.append(start_time+timestamp)
-    frame_to_angle_ts.append([num, find_closest_timestamp(steering_angle, start_time+timestamp]))
+    frame_to_angle_ts.append([num, find_closest_timestamp(steering_timestamp, start_time+timestamp)])
 
   # get 1-1 mapping of each steering_angle to corresponding frame
   for i, steering_ts in enumerate(steering_timestamp):
@@ -53,9 +55,12 @@ try:
 
   # save cleaned data
   for index in clean_data[:,0]:
-    pylab.imsave('imgs/frame%d.jpg'%index, vid.get_data(index))
+    pylab.imsave('imgs/frame%d.jpg'%int(index), vid.get_data(int(index)))
     pylab.close()
 
 
 except RuntimeError:
   print('something went wrong')
+
+
+np.savetxt("foo.csv", clean_data, delimiter=',')	
