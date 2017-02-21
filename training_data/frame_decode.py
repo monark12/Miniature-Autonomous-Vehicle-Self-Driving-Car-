@@ -53,14 +53,21 @@ try:
   # remove records where car was not moving
   clean_data = multidim_intersect(frame_to_angle_ts, angle_to_frame_ts)
 
-  # add steering angle
+  # replace timestamp in clean_data by steering angle
+	#### optimize this without using temp 
   temp = []
   steering_timestamp = list(steering_timestamp)
   for i, steer_ts in enumerate(clean_data[:,1]):
     temp.append(steering_angle[steering_timestamp.index(steer_ts)])
-  print(clean_data[:,1])
-  for i in range(len(clean_data[:,1])):
-    clean_data[i,1] = int(temp[i])
+  # temp=[0]*len(temp)
+  clean_data[:,1] = np.array(temp)
+  clean_data = clean_data.astype(np.int64)
+  del temp
+
+  print(temp)
+  # print(clean_data)
+  # for i in range(len(clean_data)):
+  #   clean_data[i,1] = int(temp[i])
 
 
   # save cleaned data
