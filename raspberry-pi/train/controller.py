@@ -46,17 +46,17 @@ class Controller(object):
 
   def on_release(self, key):
     if key.char == 'w':
-			self.motor.stop()
+      self.motor.stop()
 
     elif key.char == 'a':
-			self.steering_timestamp.append(time.time())
-			self.servo.center()
-			self.steering_angle.append(self.dir['forward'])
+      self.steering_timestamp.append(time.time())
+      self.servo.center()
+      self.steering_angle.append(self.dir['forward'])
 
     elif key.char == 'd':
-			self.steering_timestamp.append(time.time())
-			self.servo.center()
-			self.steering_angle.append(self.dir['forward'])
+      self.steering_timestamp.append(time.time())
+      self.servo.center()
+      self.steering_angle.append(self.dir['forward'])
 
 
   def steer(self):
