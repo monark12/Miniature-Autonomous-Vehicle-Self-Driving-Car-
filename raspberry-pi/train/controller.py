@@ -7,6 +7,7 @@ from util import servo
 import pygame
 from pygame.locals import *
 import numpy as np
+from pynput import keyboard
 
 pygame.init()
 screen = pygame.display.set_mode((50,50))
@@ -19,55 +20,50 @@ class Controller(object):
     self.steering_timestamp = []
     self.dir = {'forward': 0, 'forward_left': 1, 'forward_right': 2}
 
+  def on_press(self, key):
+    if key.char == 'w':
+      self.steering_timestamp.append(time.time())
+      print("forward")
+      self.motor.forward(70)
+      self.steering_angle.append(self.dir['forward'])
+
+    elif key.char == 'a':
+      self.steering_timestamp.append(time.time())
+      print("forward-left")
+      self.servo.left()
+      self.steering_angle.append(self.dir['forward_left'])
+
+    elif key.char == 'd':
+      self.steering_timestamp.append(time.time())
+      print("forward-right")
+      self.servo.right()
+      self.steering_angle.append(self.dir['forward_right'])
+
+    elif key.char == 'q':
+      self.save_and_exit()
+      # Stop listener
+      return False
+
+  def on_release(self, key):
+    if key.char == 'w':
+			self.motor.stop()
+
+    elif key.char == 'a':
+			self.steering_timestamp.append(time.time())
+			self.servo.center()
+			self.steering_angle.append(self.dir['forward'])
+
+    elif key.char == 'd':
+			self.steering_timestamp.append(time.time())
+			self.servo.center()
+			self.steering_angle.append(self.dir['forward'])
+
+
   def steer(self):
-    while(True):
-      for event in pygame.event.get():
-
-        # key is pressed
-        if event.type == KEYDOWN:
-
-          if event.key == K_UP:
-            self.steering_timestamp.append(time.time())
-            print("forward")
-            self.motor.forward(70)
-            self.steering_angle.append(self.dir['forward'])
-
-          elif event.key == K_LEFT:
-            self.steering_timestamp.append(time.time())
-            print("forward-left")
-            self.servo.left()
-            self.steering_angle.append(self.dir['forward_left'])
-
-          elif event.key == K_RIGHT:
-            self.steering_timestamp.append(time.time())
-            print("forward-right")
-            self.servo.right()
-            self.steering_angle.append(self.dir['forward_right'])
-
-          elif event.key == K_q:
-            self.save_and_exit()
-
-        # key is down
-        elif event.type == KEYUP:
-          print("released")
-          if event.key == K_UP:
-            self.motor.stop()
-
-          elif event.key == K_LEFT:
-            self.steering_timestamp.append(time.time())
-            self.servo.center()
-            self.steering_angle.append(self.dir['forward'])
-
-          elif event.key == K_RIGHT:
-            self.steering_timestamp.append(time.time())
-            self.servo.center()
-            self.steering_angle.append(self.dir['forward'])
-
-        # key is pressed and down
-        else:
-          print("pressed")
-          self.steering_timestamp.append(time.time())
-          self.steering_angle.append(self.steering_angle[-1])
+    with keyboard.Listener(
+        on_press=on_press,
+        on_release=on_release) as listener:
+      listener.join()
 
   def save_and_exit(self):
     print("saving")
