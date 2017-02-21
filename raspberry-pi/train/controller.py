@@ -4,13 +4,13 @@ import time
 from time import gmtime, strftime
 from util import motor
 from util import servo
-import pygame
-from pygame.locals import *
+#import pygame
+#from pygame.locals import *
 import numpy as np
 from pynput import keyboard
 
-pygame.init()
-screen = pygame.display.set_mode((50,50))
+#pygame.init()
+#screen = pygame.display.set_mode((50,50))
 
 class Controller(object):
   def __init__(self):
@@ -24,7 +24,7 @@ class Controller(object):
     if key.char == 'w':
       self.steering_timestamp.append(time.time())
       print("forward")
-      self.motor.forward(70)
+      self.motor.forward(90)
       self.steering_angle.append(self.dir['forward'])
 
     elif key.char == 'a':
@@ -61,8 +61,8 @@ class Controller(object):
 
   def steer(self):
     with keyboard.Listener(
-        on_press=on_press,
-        on_release=on_release) as listener:
+        on_press=self.on_press,
+        on_release=self.on_release) as listener:
       listener.join()
 
   def save_and_exit(self):
