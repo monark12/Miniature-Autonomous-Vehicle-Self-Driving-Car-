@@ -33,7 +33,8 @@ try:
     image_stream.seek(0)
     image = np.asarray(Image.open(image_stream).convert('L')).reshape(1,480,640,1) # 'LA' for grayscale
 
-    cnn_model.predict(image)
+    pred = cnn_model.predict(image)
+    print("Pred -->", pred)
 
     print("Prediction took -->", time.time()-prev_time)
 
