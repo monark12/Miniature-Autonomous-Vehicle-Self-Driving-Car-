@@ -1,4 +1,7 @@
 training_data/*
+sdrcc/raspberry-pi/*.pyc
+sdrcc/server/*.pyc
+sdrcc/selfdrive/*.pyc
 sdrcc/selfdrive/monark_pc/*.h5
 sdrcc/selfdrive/monark_pc/*.json
 sdrcc/selfdrive/gautam_pc/*.h5
