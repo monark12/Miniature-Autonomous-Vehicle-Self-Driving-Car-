@@ -5,6 +5,7 @@ import cv2
 from PIL import Image
 import time
 from keras.models import model_from_json
+import numpy as np
 
 json_file = open('monark/model.json','r')
 loaded_model_json = json_file.read()
@@ -17,11 +18,10 @@ server_socket = socket.socket()
 server_socket.bind(('192.168.0.6', 8000))
 server_socket.listen(0)
 
-i=0
-
 connection = server_socket.accept()[0].makefile('rb')
 try:
   while True:
+    prev_time = time.time()
     image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
     if not image_len:
       pass
@@ -31,16 +31,12 @@ try:
     image_receive_timestamp = time.time()
 
     image_stream.seek(0)
-    image = Image.open(image_stream)
+    image = np.asarray(Image.open(image_stream).convert('L')).reshape(1,480,640,1) # 'LA' for grayscale
 
-    print(type(image) )
-    #image.save("training_images/frame"+str(i)+".jpg", "JPEG", quality=80, optimize=True, progressive=True)
-    i+=1
-    print ('----------------', time.time(), '----------------')
-    print('Image is %dx%d' % image.size)
-    image.verify()
-    print('Image is verified')
-    print ('--------------------------------')
+    cnn_model.predict(image)
+
+    print("Prediction took -->", time.time()-prev_time)
+
 finally:
   connection.close()
   server_socket.close()
