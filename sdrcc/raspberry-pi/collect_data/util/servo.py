@@ -5,24 +5,24 @@ class Servo(object):
   def __init__(self, pin):
     self.pin = pin
     self.pi = pigpio.pi() # Connect to local Pi.
+    self.extreme_turn_pwm = 200
+    self.center_pwm = 2150
+    self.left_pwm = self.center_pwm - self.extreme_turn_pwm
+    self.right_pwm = self.center_pwm + self.extreme_turn_pwm
 
   def center(self):
-    self.pi.set_servo_pulsewidth(self.pin, 2150);
-    time.sleep(.02) #### to be changed
+    self.pi.set_servo_pulsewidth(self.pin, self.center_pwm);
+    time.sleep(.02)
 
   def left(self):
-    self.pi.set_servo_pulsewidth(self.pin, 1950); #2050
-    time.sleep(.02) #### to be changed
+    self.pi.set_servo_pulsewidth(self.pin, self.left_pwm); 
+    time.sleep(.02)
 
   def right(self):
-    self.pi.set_servo_pulsewidth(self.pin, 2350);
-    time.sleep(.02) #### to be changed
+    self.pi.set_servo_pulsewidth(self.pin, self.right_pwm);
+    time.sleep(.02)
 
-  def fl(self,fac):
-    self.pi.set_servo_pulsewidth(self.pin, int(2150+(-fac)*(2150-1950))); #2050
-    time.sleep(.02) #### to be changed
-     
-  def fr(self,fac):
-    self.pi.set_servo_pulsewidth(self.pin,int(2150+fac*(2350-2150))); #2050
-    time.sleep(.02) #### to be changed
+  def turn(self, angle):
+    self.pi.set_servo_pulsewidth(self.pin, self.center_pwm+angle*self.extreme_turn_pwm);
+    time.sleep(.02)
      

@@ -15,12 +15,8 @@ json_file.close()
 cnn_model = model_from_json(loaded_model_json)
 cnn_model.load_weights('monark_pc/model_weights.h5')
 
-
-# adam = Adam(lr = 0.01, decay = 1e-4)
-# cnn_model.compile(loss='mean_squared_error', optimizer = adam)
-
 m = motor()
-s =servo()
+s = servo()
 with picamera.PiCamera() as camera:
 	camera.color_effects = (128,128)
     m.forward(80)
