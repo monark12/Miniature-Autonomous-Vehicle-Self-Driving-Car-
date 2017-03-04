@@ -33,7 +33,15 @@ try:
       
       stream.seek(0)
       stream.truncate()
-  connection.write(struct.pack('<l',0))
+      connection.write(struct.pack('<l',0))
+
+      # receive
+      steering_angle = float(connection.recv(1))
+      servo.turn(steering_angle)
+      motor.foward(80)
+  
+
+
 except KeyboardInterrupt:
   sys.exit(-1)
 

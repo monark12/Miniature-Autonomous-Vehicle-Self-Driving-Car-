@@ -19,6 +19,7 @@ server_socket.bind(('192.168.0.6', 8000))
 server_socket.listen(0)
 
 connection = server_socket.accept()[0].makefile('rb')
+
 try:
   while True:
     prev_time = time.time()
@@ -34,6 +35,11 @@ try:
     image = np.asarray(Image.open(image_stream).convert('L')).reshape(1,480,640,1) # 'LA' for grayscale
 
     pred = cnn_model.predict(image)
+    connection.send(str(pred[0][0]))
+            if pred > 1:
+      pred = 1
+    elif pred < 1:
+      pred = -1
     print("Pred -->", pred)
 
     print("Prediction took -->", time.time()-prev_time)
