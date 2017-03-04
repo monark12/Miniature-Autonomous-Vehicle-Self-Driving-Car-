@@ -1,0 +1,2 @@
+raspivid -w 640 -h 480 -o /home/pi/projects/sdrcc/raspberry-pi/train/video1.h264 -ex night -fps 10 -t 60000
+

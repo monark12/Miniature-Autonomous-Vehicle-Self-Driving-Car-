@@ -1,0 +1,6 @@
+make car drive at night (in dark) with headlights on
+lane changing and overtaking
+parking
+traffic signs and signal detection
+
+fix camera straight and make it rigid
