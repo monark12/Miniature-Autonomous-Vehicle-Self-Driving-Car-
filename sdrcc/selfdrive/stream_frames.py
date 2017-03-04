@@ -5,16 +5,16 @@ import socket
 import picamera
 import numpy as np
 import io
-import controller 
-from utils import servo
-from utils import motor
+#import controller 
+from util import servo
+from util import motor
 
 client_socket = socket.socket()
 print('bef con')
 client_socket.connect(('192.168.0.6', 8000))
 print('aft con')
 
-c = controller.Controller()
+#c = controller.Controller()
 
 connection = client_socket.makefile('wb')
 try:
@@ -24,10 +24,10 @@ try:
 
     stream = io.BytesIO()
     
-    for image in camera.capture_continuous(stream, use_video_port=True):
+    for image in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
       connection.write(struct.pack('<l',stream.tell()))
       connection.flush()
-
+      print(stream, type(stream))
       stream.seek(0)
       connection.write(stream.read())
       
