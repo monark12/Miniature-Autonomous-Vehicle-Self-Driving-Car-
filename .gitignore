@@ -1,6 +1,8 @@
-server/test.py
-server/training_images
-plan.org
+training_data/*
+sdrcc/selfdrive/monark_pc/*.h5
+sdrcc/selfdrive/monark_pc/*.json
+sdrcc/selfdrive/gautam_pc/*.h5
+sdrcc/selfdrive/gautam_pc/*.json
 .*
 */#*#
 */.#*#
