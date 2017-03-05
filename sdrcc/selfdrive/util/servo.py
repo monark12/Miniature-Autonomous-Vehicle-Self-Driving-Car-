@@ -2,15 +2,15 @@ import time
 import pigpio
 
 class Servo(object):
-  def __init__(seltf, pin):
+  def __init__(self, pin):
     self.pin = pin
     self.pi = pigpio.pi() # Connect to local Pi.
-    self.extreme_nturn_pwm = 200
+    self.extreme_turn_pwm = 200
     self.center_pwm = 2150
     self.left_pwm = self.center_pwm - self.extreme_turn_pwm
     self.right_pwm = self.center_pwm + self.extreme_turn_pwm
 
-  def center(selif):
+  def center(self):
     self.pi.set_servo_pulsewidth(self.pin, int(self.center_pwm));
     time.sleep(.02)
 
