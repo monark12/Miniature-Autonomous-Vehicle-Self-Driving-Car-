@@ -3,6 +3,7 @@ sdrcc/raspberry-pi/*.pyc
 sdrcc/raspberry-pi/collect_data/*.pyc
 sdrcc/server/*.pyc
 sdrcc/selfdrive/*.pyc
+sdrcc/selfdrive/util/*.pyc
 sdrcc/selfdrive/monark_pc/*.h5
 sdrcc/selfdrive/monark_pc/*.json
 sdrcc/selfdrive/gautam_pc/*.h5
