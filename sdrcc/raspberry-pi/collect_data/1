@@ -22,35 +22,39 @@ class Controller(object):
 
 
   def on_press(self, key):
-    try:
-      if key.char == 'w':
-        self.steering_timestamp.append(time.time())
-        print("forward")
-        self.motor.forward(100)
-        self.steering_angle.append(self.dir['forward'])
+    if key.char == 'w':
+      self.steering_timestamp.append(time.time())
+      print("forward")
+      self.motor.forward(75)
+      self.steering_angle.append(self.dir['forward'])
+
+    elif key.char == 'a':
+      self.steering_timestamp.append(time.time())
+      print("forward-left")
+      self.servo.left()
+      self.steering_angle.append(self.dir['forward_left'])
+
+    elif key.char == 'd':
+      self.steering_timestamp.append(time.time())
+      print("forward-right")
+      self.servo.right()
+      self.steering_angle.append(self.dir['forward_right'])
+
+    elif key.char == 'b':
+      # Stop listener
+      print('entered')
+      self.motor.stop()
+      print('motor stop')
+      self.servo.center
+      print('servo center')
+      self.servo.stop()
+      print('servo stop')
+      self.save_and_exit()
  
-      elif key.char == 'a':
-        self.steering_timestamp.append(time.time())
-        print("forward-left")
-        self.servo.left()
-        self.steering_angle.append(self.dir['forward_left'])
+      return False
 
-      elif key.char == 'd':
-        self.steering_timestamp.append(time.time())
-        print("forward-right")
-        self.servo.right()
-        self.steering_angle.append(self.dir['forward_right'])
-
-      elif key.char == 'q':
-        self.motor.stop()
-        self.servo.center
-        self.servo.stop()
-        self.save_and_exit()
- 
-        return False
-
-    except AttributeError:
-      print("You've pressed the wrong key!!!")
+    #except AttributeError:
+     # print("You've pressed the wrong key!!!")
 
   def on_release(self, key):
     try:

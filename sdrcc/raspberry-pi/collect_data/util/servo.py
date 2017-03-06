@@ -25,4 +25,6 @@ class Servo(object):
   def turn(self, angle):
     self.pi.set_servo_pulsewidth(self.pin, self.center_pwm+angle*self.extreme_turn_pwm);
     time.sleep(.02)
-     
+  
+  def stop(self):
+    self.pi.set_servo_pulsewidth(self.pin, 0);
