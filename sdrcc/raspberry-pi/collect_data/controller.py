@@ -1,74 +1,47 @@
-import sys
 import os
 import time
 from time import gmtime, strftime
 from util import motor
 from util import servo
-#import pygame
-#from pygame.locals import *
-import numpy as np
+from threading import Thread
 from pynput import keyboard
+import numpy as np
 
-#pygame.init()
-#screen = pygame.display.set_mode((50,50))
 
-class Controller(object):
+class ControllerStack(object):
   def __init__(self):
-    self.motor = motor.Motor()
-    self.servo = servo.Servo(4)
+    self.items = []
     self.steering_angle = []
     self.steering_timestamp = []
-    self.dir = {'forward': 0, 'forward_left': -1, 'forward_right': 1}
+    self.LISTENER_ACTIVE = False    
 
+  def set_active(self):
+    self.LISTENER_ACTIVE = True
 
-  def on_press(self, key):
-    try:
-      if key.char == 'w':
-        self.steering_timestamp.append(time.time())
-        print("forward")
-        self.motor.forward(100)
-        self.steering_angle.append(self.dir['forward'])
- 
-      elif key.char == 'a':
-        self.steering_timestamp.append(time.time())
-        print("forward-left")
-        self.servo.left()
-        self.steering_angle.append(self.dir['forward_left'])
-
-      elif key.char == 'd':
-        self.steering_timestamp.append(time.time())
-        print("forward-right")
-        self.servo.right()
-        self.steering_angle.append(self.dir['forward_right'])
-
-      elif key.char == 'q':
-        self.motor.stop()
-        self.servo.center
-        self.servo.stop()
-        self.save_and_exit()
- 
-        return False
-
-    except AttributeError:
-      print("You've pressed the wrong key!!!")
-
-  def on_release(self, key):
-    try:
-      if key.char == 'w':
-        self.motor.stop()
+  def set_deactive(self):
+    self.LISTENER_ACTIVE = False  
   
-      elif key.char == 'a':
+  def push(self, item):
+    if item not in self.items:
+      self.items.append(item)
+
+  def pop(self):
+    return self.items.pop()
+
+  def peek(self):
+    return self.items[-1]
+
+  def isEmpty(self):
+    return len(self.items) == 0
+
+  def run(self):
+    print('running')
+    while True:
+      time.sleep(0.1)
+      if self.LISTENER_ACTIVE and not self.isEmpty():
+        print(self.peek())
         self.steering_timestamp.append(time.time())
-        self.servo.center()
-        self.steering_angle.append(self.dir['forward'])
-  
-      elif key.char == 'd':
-        self.steering_timestamp.append(time.time())
-        self.servo.center()
-        self.steering_angle.append(self.dir['forward'])
-  
-    except AttributeError:
-      print("You've pressed the wrong key!!!")
+        self.steering_angle.append(self.peek())
 
   def save_and_exit(self):
     print("saving")
@@ -76,7 +49,60 @@ class Controller(object):
     self.steering_timestamp = np.array(self.steering_timestamp)
     np.savez("data/steer-1.npz", steering_angle=self.steering_angle, steering_timestamp=self.steering_timestamp)
     print("exiting")
+    os._exit(1)
 
+stack = ControllerStack()
+
+      
+class Controller(object):
+  def __init__(self):
+    self.motor = motor.Motor()
+    self.servo = servo.Servo(pin=4)
+    self.dir = {'forward': 0, 'forward_left': -1, 'forward_right': 1}
+
+  def on_press(self, key):
+    try:
+      if key.char == 'w':
+        stack.set_active()
+        self.motor.forward(75)
+        stack.push(self.dir['forward'])
+ 
+      elif key.char == 'a':
+        stack.set_active()
+        self.servo.left()
+        stack.push(self.dir['forward_left'])
+
+      elif key.char == 'd':
+        stack.set_active()        
+        self.servo.right()
+        stack.push(self.dir['forward_right'])
+
+      elif key.char == 'q':
+        self.motor.stop()
+        self.servo.center
+        self.servo.stop()
+        stack.save_and_exit() 
+
+    except AttributeError:
+      print("You've pressed the wrong key!!!")
+
+  def on_release(self, key):
+    try:
+      if key.char == 'w':
+        stack.set_deactive()
+        self.motor.stop()
+  
+      elif key.char == 'a':
+        stack.pop()
+        self.servo.center()
+  
+      elif key.char == 'd':
+        stack.pop()
+        self.servo.center()
+
+    except AttributeError:
+      print("You've pressed the wrong key!!!")
+  
   def steer(self):
     with keyboard.Listener(
         on_press=self.on_press,
@@ -84,8 +110,9 @@ class Controller(object):
       listener.join()
 
 def main():
-  c = Controller()
-  c.steer()
+  drive = Controller()
+  Thread(target=drive.steer).start()
+  Thread(target=stack.run).start()
 
 if __name__ == '__main__':
   main()
