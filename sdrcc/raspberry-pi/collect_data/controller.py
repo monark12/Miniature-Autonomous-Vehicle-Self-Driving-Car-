@@ -81,6 +81,23 @@ class Controller(object):
     #os.system('scp steer-1.npz monark@192.168.0.6:/home/sdrcc/training_data/')
     #os.system('scp steer-1.npz gautamsharma@192.168.0.2:/home/projects/sdrcc/training_data/')
 
+
+class ControllerStack(object):
+  def __init__(self):
+    self.items = []
+
+  def push(self, item):
+    self.items.append(item)
+
+  def pop(self):
+     return self.items.pop()
+
+  def peek(self):
+     return self.items[-1]
+
+  def isEmpty(self):
+     return len(self.items) == 0
+
 def main():
   c = Controller()
   c.steer()
