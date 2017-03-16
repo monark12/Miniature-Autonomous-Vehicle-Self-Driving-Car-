@@ -1,24 +1,13 @@
 import os
 from time import gmtime, strftime, sleep, time
-from util import motor
-from util import servo
-from threading import Thread
+from util import motor, servo
 from pynput import keyboard
-import numpy as np
+import pandas as pd
 
 
 class ControllerStack(object):
   def __init__(self):
     self.items = []
-    self.steering_angle = []
-    self.steering_timestamp = []
-    self.LISTENER_ACTIVE = False
-
-  def set_active(self):
-    self.LISTENER_ACTIVE = True
-
-  def set_deactive(self):
-    self.LISTENER_ACTIVE = False
 
   def push(self, item):
     if item not in self.items:
@@ -27,59 +16,55 @@ class ControllerStack(object):
   def pop(self):
     return self.items.pop()
 
-  def peek(self):
-    return self.items[-1]
+  # def peek(self):
+  #   return self.items[-1]
 
-  def isEmpty(self):
-    return len(self.items) == 0
+  # def isEmpty(self):
+  #   return len(self.items) == 0
 
-  def run(self):
-    print('running')
-    while True:
-      sleep(0.1)
-      if self.LISTENER_ACTIVE and not self.isEmpty():
-        print(self.peek())
-        self.steering_timestamp.append(time())
-        self.steering_angle.append(self.peek())
-
-  def save_and_exit(self):
-    print("saving")
-    self.steering_angle = np.array(self.steering_angle)
-    self.steering_timestamp = np.array(self.steering_timestamp)
-    np.savez("data/steer-1.npz", steering_angle=self.steering_angle, steering_timestamp=self.steering_timestamp)
-    print("exiting")
-    os._exit(1)
 
 stack = ControllerStack()
+
 
 class Controller(object):
   def __init__(self):
     self.motor = motor.Motor()
     self.servo = servo.Servo(pin=4)
-    self.dir = {'forward': 0, 'forward_left': -1, 'forward_right': 1}
+    self.angle = {'forward': 0, 'forward_left': -1, 'forward_right': 1}
+    self.state = {'dir': None, 'action': None, 'timestamp': None}
+    self.data_stack = pd.DataFrame([], columns=['dir', 'action', 'timestamp'])
 
   def on_press(self, key):
     try:
       if key.char == 'w':
-        stack.set_active()
         self.motor.forward(75)
-        stack.push(self.dir['forward'])
+        self.state['dir'] = self.angle['forward']
+        self.state['action'] = 'pressed'
+        self.state['timestamp'] = time()
+        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
+        state_stack.push(self.state['dir'])
 
       elif key.char == 'a':
-        stack.set_active()
         self.servo.left()
-        stack.push(self.dir['forward_left'])
+        self.state['dir'] = self.angle['forward_left']
+        self.state['action'] = 'pressed'
+        self.state['timestamp'] = time()
+        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
+        state_stack.push(self.state['dir'])
 
       elif key.char == 'd':
-        stack.set_active()
         self.servo.right()
-        stack.push(self.dir['forward_right'])
+        self.state['dir'] = self.angle['forward_left']
+        self.state['action'] = 'pressed'
+        self.state['timestamp'] = time()
+        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
+        state_stack.push(self.state['dir'])
 
       elif key.char == 'q':
         self.motor.stop()
         self.servo.center
         self.servo.stop()
-        stack.save_and_exit()
+        state_stack.save_and_exit()
 
     except AttributeError:
       print("You've pressed the wrong key!!!")
@@ -87,16 +72,28 @@ class Controller(object):
   def on_release(self, key):
     try:
       if key.char == 'w':
-        stack.set_deactive()
         self.motor.stop()
+        self.state['dir'] = self.angle['forward']
+        self.state['action'] = 'released'
+        self.state['timestamp'] = time()
+        state_stack.pop()
+        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
 
       elif key.char == 'a':
-        stack.pop()
         self.servo.center()
+        self.state['dir'] = self.angle['forward_left']
+        self.state['action'] = 'released'
+        self.state['timestamp'] = time()
+        state_stack.pop()
+        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
 
       elif key.char == 'd':
-        stack.pop()
         self.servo.center()
+        self.state['dir'] = self.angle['forward_right']
+        self.state['action'] = 'released'
+        self.state['timestamp'] = time()
+        state_stack.pop()
+        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
 
     except AttributeError:
       print("You've pressed the wrong key!!!")
@@ -109,16 +106,12 @@ class Controller(object):
 
   def save_and_exit(self):
     print("saving")
-    self.steering_angle = np.array(self.steering_angle)
-    self.steering_timestamp = np.array(self.steering_timestamp)
-    np.savez("data/steer-1.npz", steering_angle=self.steering_angle, steering_timestamp=self.steering_timestamp)
+    self.data_stack.to_csv('data/steer-1.csv', index=False)
     print("exiting")
 
 
 def main():
   drive = Controller()
-  Thread(target=drive.steer).start()
-  Thread(target=stack.run).start()
 
 if __name__ == '__main__':
   main()

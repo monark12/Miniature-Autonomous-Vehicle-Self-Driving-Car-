@@ -1,3 +1,8 @@
+"""
+Take all the image and steering angle data,
+get 1-1 image-angle mapping for each folder
+and save the mapping as foo.csv in each data folder
+"""
 from matplotlib import pylab 
 import imageio
 import csv

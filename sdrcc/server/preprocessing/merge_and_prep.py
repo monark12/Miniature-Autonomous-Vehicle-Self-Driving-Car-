@@ -1,3 +1,7 @@
+"""
+Take foo.csv in each data folder and concat into final.csv
+Add mean columns
+"""
 import collections
 import numpy as np
 import pandas as pd
