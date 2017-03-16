@@ -4,3 +4,5 @@ parking
 traffic signs and signal detection
 
 fix camera straight and make it rigid
+
+should be able to drive in dark with headlights on

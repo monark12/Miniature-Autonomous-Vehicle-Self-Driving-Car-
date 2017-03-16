@@ -4,6 +4,8 @@ import struct
 import cv2
 from PIL import Image
 import time
+import os
+os.environ['KERAS_BACKEND'] = 'theano'
 from keras.models import model_from_json
 import numpy as np
 
@@ -15,7 +17,7 @@ cnn_model = model_from_json(loaded_model_json)
 cnn_model.load_weights('monark/model.h5')
 
 server_socket = socket.socket()
-server_socket.bind(('192.168.0.6', 8000))
+server_socket.bind(('192.168.0.4', 8000))
 server_socket.listen(0)
 
 connection = server_socket.accept()[0].makefile('rb')
