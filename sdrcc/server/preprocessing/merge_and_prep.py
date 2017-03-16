@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import os
 
-DIR = '/media/gautam/projects/sdrcc/training_data/'
+DIR = '../../../training_data/'
 data_folders = os.listdir(DIR)
 RANGE = (3,15)
 
@@ -22,14 +22,10 @@ for num, folder in enumerate(data_folders):
     pass
 
 final = final.drop_duplicates(subset='id') # drop duplicates
-final.angle = final.angle.replace(1,-1)
-final.angle = final.angle.replace(2,1)
 final.to_csv(DIR+'final.csv', index=False)
 
 # add regressive labels
 final = pd.read_csv(DIR+'final.csv')
-print(final.head)
-
 n_mean_labels = []
 
 for i in range(RANGE[0],RANGE[1]):

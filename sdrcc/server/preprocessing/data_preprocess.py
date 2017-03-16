@@ -22,7 +22,6 @@ def multidim_intersect(arr1, arr2):
 
 
 train_folders = os.listdir('../../../training_data')
-
 for folder in train_folders:
   try:
     if os.path.isdir('../../../training_data/'+folder) and len(os.listdir('../../../training_data/'+folder)):
