@@ -3,8 +3,9 @@ from time import gmtime, strftime, sleep, time
 from util import motor, servo
 from pynput import keyboard
 import pandas as pd
+import sys
 
-SPEED = 75
+SPEED = 80
 
 class Stack(object):
   def __init__(self):
@@ -15,13 +16,14 @@ class Stack(object):
       self.__items.append(item)
 
   def pop(self):
-    return self.__items.pop()
+    if not self.isEmpty():
+      return self.__items.pop()
 
   def peek(self):
     return self.__items[-1]
 
   def isEmpty(self):
-		return len(self.__items) == 0
+    return len(self.__items)==0
 
 state_stack = Stack()
 
@@ -31,25 +33,25 @@ class Controller(object):
     self.motor = motor.Motor()
     self.servo = servo.Servo(pin=4)
     self.angle = {'forward': 0, 'forward_left': -1, 'forward_right': 1}
-    self.data_stack = pd.DataFrame([], columns=['angle', 'action', 'timestamp'])
+    self.data_stack = pd.DataFrame( columns=['angle', 'action', 'timestamp'])
 
   def on_press(self, key):
     try:
       if key.char == 'w':
         self.motor.forward(SPEED)
-        if not self.state_stack.isEmpty() and self.state_stack.peek() != self.angle['forward']: 
+        if not state_stack.isEmpty() and state_stack.peek() != self.angle['forward']: 
           self.data_stack.loc[len(self.data_stack)] = [self.angle['forward'], 'pressed', time()]
           state_stack.push(self.angle['forward'])
 
       elif key.char == 'a':
         self.servo.left()
-        if not self.state_stack.isEmpty() and self.state_stack.peek() != self.angle['forward_left']: 
+        if not state_stack.isEmpty() and state_stack.peek() != self.angle['forward_left']: 
           self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_left'], 'pressed', time()]
           state_stack.push(self.angle['forward_left'])
 
       elif key.char == 'd':
         self.servo.right()
-        if not self.state_stack.isEmpty() and self.state_stack.peek() != self.angle['forward_right']: 
+        if not state_stack.isEmpty() and state_stack.peek() != self.angle['forward_right']: 
           self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_right'], 'pressed', time()]
           state_stack.push(self.angle['forward_right'])
 
@@ -57,10 +59,11 @@ class Controller(object):
         self.motor.stop()
         self.servo.center
         self.servo.stop()
-        state_stack.save_and_exit()
+        self.save_and_exit()
 
-    except AttributeError:
-      print("You've pressed the wrong key!!!")
+    except Exception as e:
+      print(e)
+      #print("You've pressed the wrong key!!!")
 
   def on_release(self, key):
     try:
@@ -89,10 +92,12 @@ class Controller(object):
     print("saving")
     self.data_stack.to_csv('data/steer-1.csv', index=False)
     print("exiting")
+    sys.exit()
 
 
 def main():
   drive = Controller()
+  drive.steer()
 
 if __name__ == '__main__':
   main()
