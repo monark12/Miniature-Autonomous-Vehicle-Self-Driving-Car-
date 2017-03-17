@@ -11,6 +11,7 @@ import pickle
 import numpy as np
 import pandas as pd
 
+FPS = 15.
 
 class Stack(object):
   def __init__(self):
@@ -33,8 +34,8 @@ class Stack(object):
 def bucket(timestamp, angle_df):
   for i in range(len(angle_df)):
     if timestamp >= angle_df.loc[i]['start_timestamp'] and timestamp <= angle_df.loc[i]['end_timestamp']:
-      return angle_df['angle']
-    return np.nan
+      return angle_df.loc[i]['angle']
+  return np.nan
   
 
 train_folders = os.listdir('../../../training_data')
@@ -53,7 +54,7 @@ for folder in train_folders:
       vid = imageio.get_reader(filename,  'ffmpeg')
 
       # extract start and end time for each action
-      angle_df = pd.DataFrame([], columns=['angle', 'start_timestamp', 'end_timestamp'])
+      angle_df = pd.DataFrame(columns=['angle', 'start_timestamp', 'end_timestamp'])
       stack = Stack()
       for i in range(len(data_stack)):
         angle,action,timestamp = data_stack.loc[i]['angle'],data_stack.loc[i]['action'],data_stack.loc[i]['timestamp']
@@ -64,9 +65,10 @@ for folder in train_folders:
           end_ts = timestamp
           angle_df.loc[len(angle_df)] = [angle, start_ts, end_ts]
 
-      sync_df = pd.DataFrame([], columns=['id', 'angle'], dtype='int')
+			# sync frames and angles
+      sync_df = pd.DataFrame(columns=['id', 'angle'], dtype='int')
       for num, image in enumerate(vid.iter_data()):
-        timestamp = float(num) / 8.
+        timestamp = float(num)/FPS
         timestamp += start_time
         if timestamp >= angle_df.loc[0]['start_timestamp'] and timestamp <= angle_df.loc[len(angle_df)-1]['end_timestamp']:
           sync_df.loc[len(sync_df)] = [num, bucket(timestamp, angle_df)]
@@ -79,7 +81,6 @@ for folder in train_folders:
         sync_df.loc[i,'id'] = '#'+folder+str(sync_df.id.values[i])
         pylab.close()
       print(folder)
-
 
       sync_df.to_csv("../../../training_data/"+folder+"/sync.csv", index=False)
     

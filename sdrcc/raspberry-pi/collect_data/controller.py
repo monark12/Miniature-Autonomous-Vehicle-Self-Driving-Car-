@@ -35,9 +35,9 @@ class Controller(object):
     self.servo = servo.Servo(pin=4)
     self.angle = {'forward': 0, 'forward_left': -1, 'forward_right': 1}
     self.data_stack = pd.DataFrame( columns=['angle', 'action', 'timestamp'])
-    self.f_a = True
-    self.r_a = True
-    self.l_a = True
+    self.f_a = True ################### refactor
+    self.r_a = True ################### refactor
+    self.l_a = True ################### refactor 
 
   def on_press(self, key):
     try:
