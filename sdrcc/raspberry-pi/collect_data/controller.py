@@ -12,7 +12,7 @@ class Stack(object):
     self.__items = []
 
   def push(self, __item):
-    if __item not in self.items:
+    if __item not in self.__items:
       self.__items.append(item)
 
   def pop(self):
@@ -39,21 +39,18 @@ class Controller(object):
     try:
       if key.char == 'w':
         self.motor.forward(SPEED)
-        if not state_stack.isEmpty() and state_stack.peek() != self.angle['forward']: 
-          self.data_stack.loc[len(self.data_stack)] = [self.angle['forward'], 'pressed', time()]
-          state_stack.push(self.angle['forward'])
+        self.data_stack.loc[len(self.data_stack)] = [self.angle['forward'], 'pressed', time()]
+        state_stack.push(self.angle['forward'])
 
       elif key.char == 'a':
         self.servo.left()
-        if not state_stack.isEmpty() and state_stack.peek() != self.angle['forward_left']: 
-          self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_left'], 'pressed', time()]
-          state_stack.push(self.angle['forward_left'])
+        self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_left'], 'pressed', time()]
+        state_stack.push(self.angle['forward_left'])
 
       elif key.char == 'd':
         self.servo.right()
-        if not state_stack.isEmpty() and state_stack.peek() != self.angle['forward_right']: 
-          self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_right'], 'pressed', time()]
-          state_stack.push(self.angle['forward_right'])
+        self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_right'], 'pressed', time()]
+        state_stack.push(self.angle['forward_right'])
 
       elif key.char == 'q':
         self.motor.stop()
