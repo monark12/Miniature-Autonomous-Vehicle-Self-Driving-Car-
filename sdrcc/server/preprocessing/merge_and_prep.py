@@ -1,5 +1,5 @@
 """
-Take foo.csv in each data folder and concat into final.csv
+Take sync.csv in each data folder and concat into final.csv
 Add mean columns
 """
 import collections
@@ -12,15 +12,15 @@ data_folders = os.listdir(DIR)
 RANGE = (3,15)
 
 #first file
-# final = pd.read_csv(str(DIR)+'0/foo.csv', header=None)
-final = pd.read_csv(str(DIR)+'0/foo.csv')
+# final = pd.read_csv(str(DIR)+'0/sync.csv', header=None)
+final = pd.read_csv(str(DIR)+'0/sync.csv')
 
 # # now the rest:
 for num, folder in enumerate(data_folders):
   try:
-    if 'foo.csv' in os.listdir(str(DIR)+folder):
-      # temp = pd.read_csv(str(DIR)+folder+'/foo.csv', header=None)
-      temp = pd.read_csv(str(DIR)+folder+'/foo.csv')
+    if 'sync.csv' in os.listdir(str(DIR)+folder):
+      # temp = pd.read_csv(str(DIR)+folder+'/sync.csv', header=None)
+      temp = pd.read_csv(str(DIR)+folder+'/sync.csv')
       final = pd.concat([final,temp], ignore_index=True)
   except Exception:
     pass

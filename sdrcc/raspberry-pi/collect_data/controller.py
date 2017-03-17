@@ -4,26 +4,26 @@ from util import motor, servo
 from pynput import keyboard
 import pandas as pd
 
+SPEED = 75
 
-class ControllerStack(object):
+class Stack(object):
   def __init__(self):
-    self.items = []
+    self.__items = []
 
-  def push(self, item):
-    if item not in self.items:
-      self.items.append(item)
+  def push(self, __item):
+    if __item not in self.items:
+      self.__items.append(item)
 
   def pop(self):
-    return self.items.pop()
+    return self.__items.pop()
 
-  # def peek(self):
-  #   return self.items[-1]
+  def peek(self):
+    return self.__items[-1]
 
-  # def isEmpty(self):
-  #   return len(self.items) == 0
+  def isEmpty(self):
+		return len(self.__items) == 0
 
-
-stack = ControllerStack()
+state_stack = Stack()
 
 
 class Controller(object):
@@ -31,34 +31,27 @@ class Controller(object):
     self.motor = motor.Motor()
     self.servo = servo.Servo(pin=4)
     self.angle = {'forward': 0, 'forward_left': -1, 'forward_right': 1}
-    self.state = {'dir': None, 'action': None, 'timestamp': None}
-    self.data_stack = pd.DataFrame([], columns=['dir', 'action', 'timestamp'])
+    self.data_stack = pd.DataFrame([], columns=['angle', 'action', 'timestamp'])
 
   def on_press(self, key):
     try:
       if key.char == 'w':
-        self.motor.forward(75)
-        self.state['dir'] = self.angle['forward']
-        self.state['action'] = 'pressed'
-        self.state['timestamp'] = time()
-        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
-        state_stack.push(self.state['dir'])
+        self.motor.forward(SPEED)
+        if not self.state_stack.isEmpty() and self.state_stack.peek() != self.angle['forward']: 
+          self.data_stack.loc[len(self.data_stack)] = [self.angle['forward'], 'pressed', time()]
+          state_stack.push(self.angle['forward'])
 
       elif key.char == 'a':
         self.servo.left()
-        self.state['dir'] = self.angle['forward_left']
-        self.state['action'] = 'pressed'
-        self.state['timestamp'] = time()
-        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
-        state_stack.push(self.state['dir'])
+        if not self.state_stack.isEmpty() and self.state_stack.peek() != self.angle['forward_left']: 
+          self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_left'], 'pressed', time()]
+          state_stack.push(self.angle['forward_left'])
 
       elif key.char == 'd':
         self.servo.right()
-        self.state['dir'] = self.angle['forward_left']
-        self.state['action'] = 'pressed'
-        self.state['timestamp'] = time()
-        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
-        state_stack.push(self.state['dir'])
+        if not self.state_stack.isEmpty() and self.state_stack.peek() != self.angle['forward_right']: 
+          self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_right'], 'pressed', time()]
+          state_stack.push(self.angle['forward_right'])
 
       elif key.char == 'q':
         self.motor.stop()
@@ -73,27 +66,15 @@ class Controller(object):
     try:
       if key.char == 'w':
         self.motor.stop()
-        self.state['dir'] = self.angle['forward']
-        self.state['action'] = 'released'
-        self.state['timestamp'] = time()
-        state_stack.pop()
-        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
+        self.data_stack.loc[len(self.data_stack)] = [state_stack.pop(), 'released', time()]
 
       elif key.char == 'a':
         self.servo.center()
-        self.state['dir'] = self.angle['forward_left']
-        self.state['action'] = 'released'
-        self.state['timestamp'] = time()
-        state_stack.pop()
-        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
+        self.data_stack.loc[len(self.data_stack)] = [state_stack.pop(), 'released', time()]
 
       elif key.char == 'd':
         self.servo.center()
-        self.state['dir'] = self.angle['forward_right']
-        self.state['action'] = 'released'
-        self.state['timestamp'] = time()
-        state_stack.pop()
-        self.data_stack.loc[len(self.data_stack)] = [self.state['dir'], self.state['action'], self.state['timestamp']]
+        self.data_stack.loc[len(self.data_stack)] = [state_stack.pop(), 'released', time()]
 
     except AttributeError:
       print("You've pressed the wrong key!!!")
