@@ -39,18 +39,23 @@ class Controller(object):
     try:
       if key.char == 'w':
         self.motor.forward(SPEED)
-        self.data_stack.loc[len(self.data_stack)] = [self.angle['forward'], 'pressed', time()]
         state_stack.push(self.angle['forward'])
+        if not state_stack.isEmpty() and state_stack.peek() != self.angle['forward']: 
+          self.data_stack.loc[len(self.data_stack)] = [self.angle['forward'], 'pressed', time()]
+          
 
       elif key.char == 'a':
         self.servo.left()
-        self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_left'], 'pressed', time()]
         state_stack.push(self.angle['forward_left'])
+        if not state_stack.isEmpty() and state_stack.peek() != self.angle['forward_left']: 
+          self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_left'], 'pressed', time()]
+          
 
       elif key.char == 'd':
         self.servo.right()
-        self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_right'], 'pressed', time()]
         state_stack.push(self.angle['forward_right'])
+        if not state_stack.isEmpty() and state_stack.peek() != self.angle['forward_right']: 
+          self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_right'], 'pressed', time()]
 
       elif key.char == 'q':
         self.motor.stop()
