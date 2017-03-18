@@ -11,3 +11,11 @@ stack class used in both controller and data_preprocess module. make separate
 module for stack class and then import it from there
 
 remove uncnessary imports
+
+-------
+WORKFLOW
+-------
+go to 'test' branch
+git pull
+make sure to push both (changes done on pi and server) without merge conflicts 
+push even small changes if some issue is fixed or functionality is added
