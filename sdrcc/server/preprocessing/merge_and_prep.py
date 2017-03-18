@@ -7,29 +7,29 @@ import numpy as np
 import pandas as pd
 import os
 
-DIR = '../../../training_data/'
+DIR = '/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'
 data_folders = os.listdir(DIR)
 RANGE = (3,15)
 
 #first file
 # final = pd.read_csv(str(DIR)+'0/sync.csv', header=None)
-final = pd.read_csv(str(DIR)+'0/sync.csv')
+final = pd.read_csv(str(DIR)+'1/sync.csv')
 
 # # now the rest:
-for num, folder in enumerate(data_folders):
-  try:
-    if 'sync.csv' in os.listdir(str(DIR)+folder):
-      # temp = pd.read_csv(str(DIR)+folder+'/sync.csv', header=None)
-      temp = pd.read_csv(str(DIR)+folder+'/sync.csv')
-      final = pd.concat([final,temp], ignore_index=True)
-  except Exception:
-    pass
+# for num, folder in enumerate(data_folders):
+#   try:
+#     if 'sync.csv' in os.listdir(str(DIR)+folder):
+#       # temp = pd.read_csv(str(DIR)+folder+'/sync.csv', header=None)
+#       temp = pd.read_csv(str(DIR)+folder+'/sync.csv')
+#       final = pd.concat([final,temp], ignore_index=True)
+#   except Exception:
+#     pass
 
-final = final.drop_duplicates(subset='id') # drop duplicates
-final.to_csv(DIR+'final.csv', index=False)
+# final = final.drop_duplicates(subset='id') # drop duplicates
+# final.to_csv(DIR+'final.csv', index=False)
 
 # add regressive labels
-final = pd.read_csv(DIR+'final.csv')
+# final = pd.read_csv(DIR+'final.csv')
 n_mean_labels = []
 
 for i in range(RANGE[0],RANGE[1]):
