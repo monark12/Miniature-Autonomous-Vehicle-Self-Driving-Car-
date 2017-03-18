@@ -1,6 +1,7 @@
 training_data/*
 sdrcc/raspberry-pi/*.pyc
 sdrcc/raspberry-pi/collect_data/*.pyc
+sdrcc/raspberry-pi/collect_data/data/*
 sdrcc/server/*.pyc
 sdrcc/selfdrive/*.pyc
 sdrcc/selfdrive/util/*.pyc

@@ -5,15 +5,15 @@ from pynput import keyboard
 import pandas as pd
 import sys
 
-SPEED = 80
+SPEED = 75
 
 class Stack(object):
   def __init__(self):
     self.__items = []
 
-  def push(self, __item):
-    if __item not in self.__items:
-      self.__items.append(__item)
+  def push(self, item):
+    if item not in self.__items:
+      self.__items.append(item)
 
   def pop(self):
     if not self.isEmpty():
