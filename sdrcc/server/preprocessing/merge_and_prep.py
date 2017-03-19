@@ -12,8 +12,9 @@ data_folders = os.listdir(DIR)
 RANGE = (3,15)
 
 #first file
-# final = pd.read_csv(str(DIR)+'0/sync.csv', header=None)
-final = pd.read_csv(str(DIR)+'1/sync.csv')
+# final = pd.read_csv(str(DIR)+'1/sync.csv', header=None)
+final = pd.read_csv(str(DIR)+'20/sync20.csv')
+# final = final.drop(final.index[-6:])
 
 # # now the rest:
 # for num, folder in enumerate(data_folders):
