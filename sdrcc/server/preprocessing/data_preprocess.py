@@ -11,6 +11,8 @@ import pickle
 import numpy as np
 import pandas as pd
 
+class Pointer(object):
+  angle_df_pointer = None
 
 class Stack(object):
   def __init__(self):
@@ -34,15 +36,18 @@ class Stack(object):
 def bucket(timestamp, angle_df):
   for i in range(len(angle_df)):
     if timestamp >= angle_df.loc[i]['start_timestamp'] and timestamp <= angle_df.loc[i]['end_timestamp']:
-      # print(i)
+      print(i)
+      Pointer.angle_df_pointer = i
       return angle_df.loc[i]['angle']
-  return np.nan
+  print('nan')
+  return np.nan #ideally nan shouldn't be returned
+                #always release all keys before quitting 
+                #controller.py (this may be fixed in the future)
   
 
 train_folders = os.listdir('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data')
-train_folders = ['1']
 for folder in train_folders:
-  
+  Pointer.angle_df_pointer = 0
   if os.path.isdir('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'+folder) and len(os.listdir('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'+folder)):
     # steer-1.csv --> steering angle (direction), action and timestamp
     data_stack = pd.read_csv('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'+folder+'/steer-1.csv')
@@ -76,18 +81,18 @@ for folder in train_folders:
         sync_df.loc[len(sync_df)] = [num, bucket(timestamp, angle_df)]
 
     # remove records where angle is NaN
-    sync_df = sync_df.dropna()
+    sync_df = sync_df.dropna().reset_index(drop=True)
+    #sync_df = sync_df[sync_df.angle==np.nan].reset_index(drop=True)        
 
 
     for i in range(len(sync_df)):
-      pylab.imsave('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/final_image_data/#'+folder+str(sync_df.id.values[i])+'.jpg', vid.get_data(int(sync_df.id.values[i])))
-      sync_df.loc[i,'id'] = '#'+folder+str(int(sync_df.id.values[i]))
-      print(sync_df.loc[i,'id'])
+      pylab.imsave('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/final_image_data/#'+folder+'-'+str(int(sync_df.id.values[i]))+'.jpg', vid.get_data(int(sync_df.id.values[i])))
+      sync_df.loc[i,'id'] = '#'+folder+'-'+str(int(sync_df.id.values[i]))
+      print(i, sync_df.values[i])
       pylab.close()
     print(folder)
-
+    
+    sync_df = sync_df.dropna().reset_index(drop=True)
 
     sync_df.to_csv("/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/"+folder+"/sync.csv", index=False)
-  
-
 
