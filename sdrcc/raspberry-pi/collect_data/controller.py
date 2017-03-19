@@ -42,7 +42,31 @@ class Controller(object):
   def on_press(self, key):
     global SPEED
     try:
-      if key.char == 'w':
+      # increase speed by 2 by arrow up
+      if key == keyboard.Key.up:
+        if SPEED <= 98:
+          SPEED += 2
+        self.motor.forward(SPEED)
+
+      # increase speed by 2 by arrow down
+      elif key == keyboard.Key.down:
+        if SPEED >= 0:
+          SPEED -= 2
+        self.motor.forward(SPEED)
+
+      # increase speed by 10 by arrow up
+      elif key == keyboard.Key.right:
+        if SPEED <= 98:
+          SPEED += 10
+        self.motor.forward(SPEED)
+
+      # increase speed by 10 by arrow down
+      elif key == keyboard.Key.left:
+        if SPEED >= 0:
+          SPEED -= 10
+        self.motor.forward(SPEED)
+
+      elif key.char == 'w':
         self.motor.forward(SPEED)
         print(state_stack.peek())
         state_stack.push(self.angle['forward'])
@@ -66,35 +90,12 @@ class Controller(object):
           self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_right'], 'pressed', time()]
           self.r_a = False  
 
-      # increase speed by 2 by arrow up
-      elif key == keyboard.Key.up:
-        if SPEED <= 98:
-          SPEED += 2
-        self.motor.forward(SPEED)
-
-      # increase speed by 2 by arrow down
-      elif key == keyboard.Key.down:
-        if SPEED >= 0:
-          SPEED -= 2
-        self.motor.forward(SPEED)
-
-      # increase speed by 10 by arrow up
-      elif key == keyboard.Key.right:
-        if SPEED <= 98:
-          SPEED += 10
-        self.motor.forward(SPEED)
-
-      # increase speed by 10 by arrow down
-      elif key == keyboard.Key.left:
-        if SPEED >= 0:
-          SPEED -= 10
-        self.motor.forward(SPEED)
-
       elif key.char == 'q':
         self.motor.stop()
         self.servo.center
         self.servo.stop()
         self.save_and_exit()
+      
 
     except Exception as e:
       print(e)
