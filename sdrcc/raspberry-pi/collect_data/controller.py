@@ -5,7 +5,7 @@ from pynput import keyboard
 import pandas as pd
 import sys
 
-SPEED = 75
+SPEED = 70
 
 class Stack(object):
   def __init__(self):
@@ -40,6 +40,7 @@ class Controller(object):
     self.l_a = True ################### refactor 
 
   def on_press(self, key):
+    global SPEED
     try:
       if key.char == 'w':
         self.motor.forward(SPEED)
@@ -64,6 +65,30 @@ class Controller(object):
         if self.r_a:
           self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_right'], 'pressed', time()]
           self.r_a = False  
+
+      # increase speed by 2 by arrow up
+      elif key == keyboard.Key.up:
+        if SPEED <= 98:
+          SPEED += 2
+        self.motor.forward(SPEED)
+
+      # increase speed by 2 by arrow down
+      elif key == keyboard.Key.down:
+        if SPEED >= 0:
+          SPEED -= 2
+        self.motor.forward(SPEED)
+
+      # increase speed by 10 by arrow up
+      elif key == keyboard.Key.right:
+        if SPEED <= 98:
+          SPEED += 10
+        self.motor.forward(SPEED)
+
+      # increase speed by 10 by arrow down
+      elif key == keyboard.Key.left:
+        if SPEED >= 0:
+          SPEED -= 10
+        self.motor.forward(SPEED)
 
       elif key.char == 'q':
         self.motor.stop()
