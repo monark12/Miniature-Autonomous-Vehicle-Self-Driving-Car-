@@ -13,18 +13,18 @@ RANGE = (3,15)
 
 #first file
 # final = pd.read_csv(str(DIR)+'1/sync.csv', header=None)
-final = pd.read_csv(str(DIR)+'20/sync20.csv')
+final = pd.read_csv(str(DIR)+'0/sync.csv')
 # final = final.drop(final.index[-6:])
 
-# # now the rest:
-# for num, folder in enumerate(data_folders):
-#   try:
-#     if 'sync.csv' in os.listdir(str(DIR)+folder):
-#       # temp = pd.read_csv(str(DIR)+folder+'/sync.csv', header=None)
-#       temp = pd.read_csv(str(DIR)+folder+'/sync.csv')
-#       final = pd.concat([final,temp], ignore_index=True)
-#   except Exception:
-#     pass
+# now the rest:
+for num, folder in enumerate(data_folders):
+  try:
+    if 'sync.csv' in os.listdir(str(DIR)+folder):
+      temp = pd.read_csv(str(DIR)+folder+'/sync.csv', header=None)
+      # temp = pd.read_csv(str(DIR)+folder+'/sync.csv')
+      final = pd.concat([final,temp], ignore_index=True)
+  except Exception:
+    pass
 
 # final = final.drop_duplicates(subset='id') # drop duplicates
 # final.to_csv(DIR+'final.csv', index=False)
