@@ -66,10 +66,28 @@ class Controller(object):
           self.data_stack.loc[len(self.data_stack)] = [self.angle['forward_right'], 'pressed', time()]
           self.r_a = False  
 
-      # increase speed by 2
-      elif key.char == 'i':
+      # increase speed by 2 by arrow up
+      elif key == keyboard.Key.up:
         if SPEED <= 98:
           SPEED += 2
+        self.motor.forward(SPEED)
+
+      # increase speed by 2 by arrow down
+      elif key == keyboard.Key.down:
+        if SPEED >= 0:
+          SPEED -= 2
+        self.motor.forward(SPEED)
+
+      # increase speed by 10 by arrow up
+      elif key == keyboard.Key.right:
+        if SPEED <= 98:
+          SPEED += 10
+        self.motor.forward(SPEED)
+
+      # increase speed by 10 by arrow down
+      elif key == keyboard.Key.left:
+        if SPEED >= 0:
+          SPEED -= 10
         self.motor.forward(SPEED)
 
       elif key.char == 'q':
