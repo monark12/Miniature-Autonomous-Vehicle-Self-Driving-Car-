@@ -31,6 +31,8 @@ push even small changes if some issue is fixed or functionality is added
 ----
 IMP TODO
 
+add speed variations in  real time (ie when a turn is predicted (turn's magnitude should be beyond certain threshold))
+
 add frame_id and folder name with '-' in between in data preprocess
 make PATH or DIR variable in data preprocess and merge
 fix data preprocess and merge to make it work for all folders

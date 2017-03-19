@@ -10,6 +10,7 @@ import csv
 import pickle
 import numpy as np
 import pandas as pd
+import collections
 
 class Pointer(object):
   angle_df_pointer = None
@@ -44,6 +45,8 @@ def bucket(timestamp, angle_df):
                 #always release all keys before quitting 
                 #controller.py (this may be fixed in the future)
   
+
+RANGE = (3,15)
 
 train_folders = os.listdir('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data')
 for folder in train_folders:
@@ -93,6 +96,19 @@ for folder in train_folders:
     print(folder)
     
     sync_df = sync_df.dropna().reset_index(drop=True)
+    n_mean_labels = []
+
+    for i in range(RANGE[0],RANGE[1]):
+      x = collections.deque(i*[0], i)
+      mean_labels = []
+      for angle in sync_df.angle.values:
+        x.appendleft(angle)
+        mean_labels.append(np.mean(x))
+      n_mean_labels.append(mean_labels)
+
+    # add regressive labels to final.csv and save
+    for i in range(RANGE[0],RANGE[1]):
+      sync_df['mean_last_%d_frames'%i] = pd.Series(n_mean_labels[i-RANGE[0]], index=sync_df.index)
 
     sync_df.to_csv("/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/"+folder+"/sync.csv", index=False)
 
