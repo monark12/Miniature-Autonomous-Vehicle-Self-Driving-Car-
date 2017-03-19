@@ -19,3 +19,21 @@ go to 'test' branch
 git pull
 make sure to push both (changes done on pi and server) without merge conflicts 
 push even small changes if some issue is fixed or functionality is added
+
+----
+IMP TODO
+
+add frame_id and folder name with '-' in between in data preprocess
+make PATH or DIR variable in data preprocess and merge
+fix data preprocess and merge to make it work for all folders
+
+keep car in center and use mean around 11
+press w first and release before ending controller.py
+
+keep camera tilted a bit towards left otherwise dotted lines won't be visible
+1500000 imgs - 90k train, 30k dev, 30k test
+rm folder/sync.csv at the end of data collection
+rm final.csv
+rm final_image_data/*
+drop records with no angle in steer-1.csv
+
