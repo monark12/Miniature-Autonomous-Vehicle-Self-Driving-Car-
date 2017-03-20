@@ -38,7 +38,7 @@ def bucket(timestamp, angle_df):
   for i in range(len(angle_df)):
     if timestamp >= angle_df.loc[i]['start_timestamp'] and timestamp <= angle_df.loc[i]['end_timestamp']:
       print(i)
-      Pointer.angle_df_pointer = i
+      # Pointer.angle_df_pointer = i
       return angle_df.loc[i]['angle']
   print('nan')
   return np.nan #ideally nan shouldn't be returned
@@ -47,20 +47,21 @@ def bucket(timestamp, angle_df):
   
 
 RANGE = (3,15)
+DIR = '/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'
+train_folders = os.listdir(DIR)
 
-train_folders = os.listdir('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data')
 for folder in train_folders:
   Pointer.angle_df_pointer = 0
-  if os.path.isdir('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'+folder) and len(os.listdir('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'+folder)):
+  if os.path.isdir(DIR+folder) and 'video1.mp4' in :
     # steer-1.csv --> steering angle (direction), action and timestamp
-    data_stack = pd.read_csv('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'+folder+'/steer-1.csv')
+    data_stack = pd.read_csv(DIR+folder+'/steer-1.csv')
 
     # start-ts-1.pkl --> start time of video recording
-    with open('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'+folder+'/start-ts-1.pkl', 'rb') as f:
+    with open(DIR+folder+'/start-ts-1.pkl', 'rb') as f:
       start_time = pickle.load(f)
 
     # load mp4 video
-    filename = '/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'+folder+'/video1.mp4'
+    filename = DIR+folder+'/video1.mp4'
     vid = imageio.get_reader(filename,  'ffmpeg')
 
     # extract start and end time for each action
@@ -89,7 +90,7 @@ for folder in train_folders:
 
 
     for i in range(len(sync_df)):
-      pylab.imsave('/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/final_image_data/#'+folder+'-'+str(int(sync_df.id.values[i]))+'.jpg', vid.get_data(int(sync_df.id.values[i])))
+      pylab.imsave(DIR+'final_image_data/#'+folder+'-'+str(int(sync_df.id.values[i]))+'.jpg', vid.get_data(int(sync_df.id.values[i])))
       sync_df.loc[i,'id'] = '#'+folder+'-'+str(int(sync_df.id.values[i]))
       print(i, sync_df.values[i])
       pylab.close()
@@ -110,5 +111,5 @@ for folder in train_folders:
     for i in range(RANGE[0],RANGE[1]):
       sync_df['mean_last_%d_frames'%i] = pd.Series(n_mean_labels[i-RANGE[0]], index=sync_df.index)
 
-    sync_df.to_csv("/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/"+folder+"/sync.csv", index=False)
+    sync_df.to_csv(DIR+folder+"/sync.csv", index=False)
 
