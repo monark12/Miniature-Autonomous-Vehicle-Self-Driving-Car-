@@ -12,8 +12,6 @@ import numpy as np
 import pandas as pd
 import collections
 
-class Pointer(object):
-  angle_df_pointer = None
 
 class Stack(object):
   def __init__(self):
@@ -33,27 +31,30 @@ class Stack(object):
   def isEmpty(self):
     return len(self.__items) == 0
 
+  def print_stack(self):
+    print(self.__items)
 
+mm=0
 def bucket(timestamp, angle_df):
-  for i in range(len(angle_df)):
-    if timestamp >= angle_df.loc[i]['start_timestamp'] and timestamp <= angle_df.loc[i]['end_timestamp']:
-      print(i)
-      # Pointer.angle_df_pointer = i
-      return angle_df.loc[i]['angle']
-  print('nan')
-  return np.nan #ideally nan shouldn't be returned
-                #always release all keys before quitting 
-                #controller.py (this may be fixed in the future)
-  
+  global mm
+  print(mm)
+  mm+=1
+  try:
+    return angle_df['angle'][(timestamp>=angle_df['start_timestamp'])&(timestamp<=angle_df['end_timestamp'])].values[0]
+  except:
+    pass
 
 RANGE = (3,15)
 DIR = '/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'
 train_folders = os.listdir(DIR)
+# print(train_folders)
+# train_folders = ['14']
 
 for folder in train_folders:
-  Pointer.angle_df_pointer = 0
-  if os.path.isdir(DIR+folder) and 'video1.mp4' in :
+  mm=0
+  if os.path.isdir(DIR+folder) and ('video1.mp4' in os.listdir(DIR+folder)) and (not 'sync.csv' in os.listdir(DIR+folder)):
     # steer-1.csv --> steering angle (direction), action and timestamp
+    print(folder)
     data_stack = pd.read_csv(DIR+folder+'/steer-1.csv')
 
     # start-ts-1.pkl --> start time of video recording
