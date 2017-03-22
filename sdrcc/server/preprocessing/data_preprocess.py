@@ -4,7 +4,7 @@ get 1-1 image-angle mapping for each folder
 and save the mapping as foo.csv in each data folder
 """
 import os
-from matplotlib import pylab 
+from matplotlib import pylab
 import imageio
 import csv
 import pickle
@@ -42,10 +42,10 @@ def bucket(timestamp, angle_df):
   try:
     return angle_df['angle'][(timestamp>=angle_df['start_timestamp'])&(timestamp<=angle_df['end_timestamp'])].values[0]
   except:
-    pass
+    return np.nan
 
 RANGE = (3,15)
-DIR = '/home/monark/LEARNINGS/Projects/SDC/sdrcc/training_data/'
+DIR = '/home/gtmshrm/projects/sdrcc/training_data/'
 train_folders = os.listdir(DIR)
 # print(train_folders)
 # train_folders = ['14']
@@ -87,7 +87,7 @@ for folder in train_folders:
 
     # remove records where angle is NaN
     sync_df = sync_df.dropna().reset_index(drop=True)
-    #sync_df = sync_df[sync_df.angle==np.nan].reset_index(drop=True)        
+    #sync_df = sync_df[sync_df.angle==np.nan].reset_index(drop=True)
 
 
     for i in range(len(sync_df)):
@@ -96,7 +96,7 @@ for folder in train_folders:
       print(i, sync_df.values[i])
       pylab.close()
     print(folder)
-    
+
     sync_df = sync_df.dropna().reset_index(drop=True)
     n_mean_labels = []
 
